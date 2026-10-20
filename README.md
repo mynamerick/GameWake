@@ -31,7 +31,7 @@ If a launcher cannot be read, GameWake reports Unknown / Unavailable instead of 
 
 ## Privacy
 
-Local-only. No telemetry, analytics, accounts, ads, automatic updates or network calls. No PowerShell, no writes to launcher files, no credentials.
+Local-only. No telemetry, analytics, accounts, ads or background updates. The only network call is an optional **Check for updates** on the Advanced page, which hits GitHub when you click it. No PowerShell, no writes to launcher files, no credentials.
 
 ## Build
 

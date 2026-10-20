@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GameWake.App.Services;
 using Microsoft.Win32;
 
 namespace GameWake.App.ViewModels;
@@ -16,13 +17,16 @@ public sealed partial class AdvancedViewModel : ObservableObject
         DataFolder = host.Paths.Root;
         LogsFolder = host.Paths.LogsDirectory;
         Version = host.Version;
+        InstallPath = Environment.ProcessPath ?? "(unknown)";
     }
 
     [ObservableProperty] private string _logText = string.Empty;
     [ObservableProperty] private string _dataFolder = string.Empty;
     [ObservableProperty] private string _logsFolder = string.Empty;
+    [ObservableProperty] private string _installPath = string.Empty;
     [ObservableProperty] private string _version = string.Empty;
     [ObservableProperty] private string _statusMessage = string.Empty;
+    [ObservableProperty] private bool _checkingUpdates;
 
     public void RefreshLogs()
     {
@@ -84,6 +88,69 @@ public sealed partial class AdvancedViewModel : ObservableObject
         _host.PersistHistory();
         StatusMessage = "Activity history cleared.";
     }
+
+    [RelayCommand]
+    private void OpenInstallFolder()
+    {
+        var folder = Path.GetDirectoryName(InstallPath);
+        OpenPath(string.IsNullOrWhiteSpace(folder) ? InstallPath : folder);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanCheckUpdates))]
+    private async Task CheckForUpdatesAsync()
+    {
+        CheckingUpdates = true;
+        StatusMessage = "Checking GitHub…";
+        try
+        {
+            var result = await UpdateChecker.CheckAsync(Version);
+            if (result.Error is not null)
+            {
+                StatusMessage = "Could not reach GitHub.";
+                var open = System.Windows.MessageBox.Show(
+                    $"Could not check for updates ({result.Error}). Open the releases page in your browser?",
+                    "GameWake",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Question);
+                if (open == System.Windows.MessageBoxResult.Yes)
+                {
+                    OpenPath(result.PageUrl);
+                }
+
+                return;
+            }
+
+            if (!result.UpdateAvailable)
+            {
+                StatusMessage = $"Up to date ({result.Current}).";
+                System.Windows.MessageBox.Show(
+                    $"This build is {result.Current}. No newer GitHub release.",
+                    "GameWake",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+                return;
+            }
+
+            StatusMessage = $"Update available: {result.Latest}";
+            var go = System.Windows.MessageBox.Show(
+                $"A newer release is on GitHub ({result.Latest}). You have {result.Current}. Open the download page?",
+                "GameWake",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Question);
+            if (go == System.Windows.MessageBoxResult.Yes)
+            {
+                OpenPath(result.PageUrl);
+            }
+        }
+        finally
+        {
+            CheckingUpdates = false;
+        }
+    }
+
+    private bool CanCheckUpdates() => !CheckingUpdates;
+
+    partial void OnCheckingUpdatesChanged(bool value) => CheckForUpdatesCommand.NotifyCanExecuteChanged();
 
     [RelayCommand]
     private void ResetSettings()

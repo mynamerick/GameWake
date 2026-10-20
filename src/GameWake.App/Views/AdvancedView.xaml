@@ -4,7 +4,7 @@
     <DockPanel Margin="18,16,16,16">
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
             <TextBlock Text="Advanced" Style="{StaticResource PageTitle}" />
-            <TextBlock Text="Logs and diagnostics stay on this PC. Nothing is sent anywhere." Style="{StaticResource Caption}" Margin="0,6,0,0" />
+            <TextBlock Text="Logs stay on this PC. Checking for updates talks to GitHub only when you click the button." Style="{StaticResource Caption}" Margin="0,6,0,0" />
         </StackPanel>
 
         <Border Style="{StaticResource Card}" DockPanel.Dock="Top" Margin="0,0,0,16" Padding="16">
@@ -20,6 +20,8 @@
                     <TextBlock Text="{Binding DataFolder}" Style="{StaticResource Caption}" Margin="0,4,16,0" />
                     <TextBlock Text="LOGS FOLDER" Style="{StaticResource Label}" Margin="0,10,0,0" />
                     <TextBlock Text="{Binding LogsFolder}" Style="{StaticResource Caption}" Margin="0,4,16,0" />
+                    <TextBlock Text="THIS EXE" Style="{StaticResource Label}" Margin="0,10,0,0" />
+                    <TextBlock Text="{Binding InstallPath}" Style="{StaticResource Caption}" Margin="0,4,16,0" />
                     <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource AccentLightBrush}" Margin="0,12,0,0"
                                Visibility="{Binding StatusMessage, Converter={StaticResource NonEmptyToVisibility}}" />
                 </StackPanel>
@@ -27,6 +29,8 @@
                     <Button Style="{StaticResource SubtleButton}" Content="OPEN LOGS FOLDER" Command="{Binding OpenLogsFolderCommand}" Margin="0,0,8,8" />
                     <Button Style="{StaticResource SubtleButton}" Content="OPEN CURRENT LOG" Command="{Binding OpenCurrentLogCommand}" Margin="0,0,8,8" />
                     <Button Style="{StaticResource SubtleButton}" Content="OPEN DATA FOLDER" Command="{Binding OpenDataFolderCommand}" Margin="0,0,8,8" />
+                    <Button Style="{StaticResource SubtleButton}" Content="OPEN INSTALL FOLDER" Command="{Binding OpenInstallFolderCommand}" Margin="0,0,8,8" />
+                    <Button Style="{StaticResource SubtleButton}" Content="CHECK FOR UPDATES" Command="{Binding CheckForUpdatesCommand}" Margin="0,0,8,8" />
                     <Button Style="{StaticResource SubtleButton}" Content="EXPORT DIAGNOSTICS" Command="{Binding ExportDiagnosticsCommand}" Margin="0,0,8,8" />
                     <Button Style="{StaticResource SubtleButton}" Content="CLEAR ACTIVITY HISTORY" Command="{Binding ClearHistoryCommand}" Margin="0,0,8,8" />
                     <Button Style="{StaticResource SubtleButton}" Content="RESET SETTINGS" Command="{Binding ResetSettingsCommand}" Margin="0,0,8,8" />
