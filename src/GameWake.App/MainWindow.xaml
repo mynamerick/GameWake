@@ -1,0 +1,168 @@
+<Window x:Class="GameWake.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:vm="clr-namespace:GameWake.App.ViewModels"
+        xmlns:views="clr-namespace:GameWake.App.Views"
+        Title="GameWake"
+        Height="740" Width="1100"
+        MinHeight="600" MinWidth="920"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="{StaticResource TextFont}"
+        FontSize="13"
+        WindowStartupLocation="CenterScreen"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True"
+        Icon="pack://application:,,,/Assets/GameWake.ico">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="48"
+                            ResizeBorderThickness="6"
+                            GlassFrameThickness="1"
+                            CornerRadius="0"
+                            UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+            <views:HistoryView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AdvancedViewModel}">
+            <views:AdvancedView />
+        </DataTemplate>
+    </Window.Resources>
+    <Border x:Name="WindowFrame" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="{StaticResource BackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Background="{StaticResource BackgroundBrush}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" IsHitTestVisible="False">
+                        <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="16" FontWeight="SemiBold" FontStretch="Expanded"
+                                   TextWrapping="NoWrap">
+                            <Run Text="GAME" Foreground="White" /><Run Text="WAKE" Foreground="{StaticResource AccentLightBrush}" />
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource TitleBarButton}"
+                                Command="{Binding GoSettingsCommand}"
+                                ToolTip="Settings"
+                                AutomationProperties.Name="Settings"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Path Width="16" Height="16" Stretch="Uniform"
+                                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                  Data="M6.4 1.5h3.2l.3 1.4a5 5 0 0 1 1.3.7l1.4-.4 1.6 2.8-1.1 1c.1.4.1.8.1 1.2s0 .8-.1 1.2l1.1 1-1.6 2.8-1.4-.4a5 5 0 0 1-1.3.7l-.3 1.4H6.4l-.3-1.4a5 5 0 0 1-1.3-.7l-1.4.4L1.8 10l1.1-1A5 5 0 0 1 2.8 8c0-.4 0-.8.1-1.2l-1.1-1 1.6-2.8 1.4.4a5 5 0 0 1 1.3-.7l.3-1.4ZM8 6.2A1.8 1.8 0 1 0 8 9.8 1.8 1.8 0 0 0 8 6.2Z" />
+                        </Button>
+                        <Button x:Name="MaximizeButton" Style="{StaticResource TitleBarButton}"
+                                Click="Maximize_Click"
+                                ToolTip="Maximise"
+                                AutomationProperties.Name="Maximise"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Grid Width="18" Height="18">
+                                <Path x:Name="EnterFullscreenGlyph" Stretch="Uniform"
+                                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                      Data="M2.5 2.5h4v1.5h-2.5v2.5h-1.5v-4zm7 0h4v4h-1.5v-2.5h-2.5v-1.5zM2.5 9.5h1.5v2.5h2.5v1.5h-4v-4zm9.5 2.5v-2.5h1.5v4h-4v-1.5h2.5z" />
+                                <Path x:Name="ExitFullscreenGlyph" Stretch="Uniform" Visibility="Collapsed"
+                                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                      Data="M5.5 1.5v3h-3V6h4.5V1.5h-1.5zm5 0H9V6h4.5V4.5h-3v-3zM2.5 10v1.5h3v3H7V10H2.5zm6.5 0v4.5h1.5v-3h3V10H9z" />
+                            </Grid>
+                        </Button>
+                        <Button Style="{StaticResource TitleBarButton}"
+                                Click="Minimize_Click"
+                                ToolTip="Minimise"
+                                AutomationProperties.Name="Minimise"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                            <TextBlock Text="–" FontSize="18" TextWrapping="NoWrap"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Button>
+                        <Button Style="{StaticResource TitleBarCloseButton}"
+                                Click="Close_Click"
+                                ToolTip="Close"
+                                AutomationProperties.Name="Close"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                            <TextBlock Text="×" FontSize="18" TextWrapping="NoWrap"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="{StaticResource RailBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" Margin="16,18,16,8">
+                            <TextBlock Text="MONITOR" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="Smart download monitoring and sleep management." Style="{StaticResource Caption}" Margin="0,10,0,0" />
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Bottom" Margin="14,0,14,16">
+                            <Button Style="{StaticResource SubtleButton}" HorizontalAlignment="Stretch"
+                                    Command="{Binding PauseOrResumeCommand}"
+                                    Content="{Binding MonitoringLabel}"
+                                    AutomationProperties.Name="{Binding MonitoringLabel}" />
+                            <Button Style="{StaticResource GhostButton}" HorizontalAlignment="Stretch" Margin="0,8,0,0"
+                                    Command="{Binding QuitCommand}" Content="EXIT"
+                                    AutomationProperties.Name="Exit GameWake" />
+                        </StackPanel>
+
+                        <StackPanel Margin="12,10,12,0">
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                         Command="{Binding GoDashboardCommand}"
+                                         IsChecked="{Binding IsDashboardSelected, Mode=OneWay}"
+                                         AutomationProperties.Name="Dashboard">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Icon}" Text="&#xE80F;" Margin="0,0,10,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                    <TextBlock Text="DASHBOARD" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                         Command="{Binding GoHistoryCommand}"
+                                         IsChecked="{Binding IsHistorySelected, Mode=OneWay}"
+                                         AutomationProperties.Name="History">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Icon}" Text="&#xE121;" Margin="0,0,10,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                    <TextBlock Text="HISTORY" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                         Command="{Binding GoSettingsCommand}"
+                                         IsChecked="{Binding IsSettingsSelected, Mode=OneWay}"
+                                         AutomationProperties.Name="Settings">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Icon}" Text="&#xE713;" Margin="0,0,10,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                    <TextBlock Text="SETTINGS" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="Nav"
+                                         Command="{Binding GoAdvancedCommand}"
+                                         IsChecked="{Binding IsAdvancedSelected, Mode=OneWay}"
+                                         AutomationProperties.Name="Advanced">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Icon}" Text="&#xE90F;" Margin="0,0,10,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                    <TextBlock Text="ADVANCED" FontFamily="{StaticResource MonoFont}" FontSize="11" FontWeight="Medium" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="0" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

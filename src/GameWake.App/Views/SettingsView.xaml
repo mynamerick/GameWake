@@ -1,0 +1,77 @@
+<UserControl x:Class="GameWake.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="18,16,10,16">
+        <StackPanel MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock Text="Settings" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="Changes are saved immediately and stored only on this PC." Style="{StaticResource Caption}" Margin="0,6,0,18" />
+
+            <TextBlock Text="GENERAL" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,22">
+                <StackPanel>
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding LaunchWithWindows}" Content="Launch with Windows" />
+                    <TextBlock Text="{Binding StartupWarning}" Foreground="{StaticResource AmberBrush}" FontSize="12" Margin="0,0,0,8" TextWrapping="Wrap"
+                               Visibility="{Binding StartupWarning, Converter={StaticResource NonEmptyToVisibility}}" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding StartMinimized}" Content="Start minimised to the tray" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding MinimizeToTrayOnClose}" Content="Minimise to the tray when the dashboard is closed" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding ShowNotifications}" Content="Show desktop notifications" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding StartMonitoringAutomatically}" Content="Start monitoring automatically" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="DOWNLOAD MONITORING" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,22">
+                <StackPanel>
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding EnableSteam}" Content="Steam" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding EnableXbox}" Content="Xbox / PC Game Pass" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding EnableEpic}" Content="Epic Games" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding EnableGog}" Content="GOG Galaxy" />
+
+                    <DockPanel Margin="0,14,0,4">
+                        <TextBlock Text="{Binding PollingLabel}" DockPanel.Dock="Right" Style="{StaticResource Caption}" VerticalAlignment="Center" />
+                        <TextBlock Text="How often to check" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <Slider Minimum="2" Maximum="60" TickFrequency="1" IsSnapToTickEnabled="True"
+                            Value="{Binding PollingIntervalSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Shorter intervals notice pauses sooner; longer intervals use less CPU." Style="{StaticResource Label}" Margin="0,4,0,12" />
+
+                    <DockPanel Margin="0,4,0,4">
+                        <TextBlock Text="{Binding GraceLabel}" DockPanel.Dock="Right" Style="{StaticResource Caption}" VerticalAlignment="Center" />
+                        <TextBlock Text="Inactivity grace period" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <Slider Minimum="0" Maximum="1800" TickFrequency="10" IsSnapToTickEnabled="True"
+                            Value="{Binding GracePeriodSeconds, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Sleep stays prevented for this long after activity stops, so brief log gaps do not toggle power." Style="{StaticResource Label}" Margin="0,4,0,16" />
+
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding PreventSleepDuringDownloads}" Content="Prevent sleep during downloads" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding PreventSleepDuringUpdates}" Content="Prevent sleep during updates" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding PreventSleepDuringInstallations}" Content="Prevent sleep during installations" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding PreventSleepDuringUnpacking}" Content="Prevent sleep during unpacking" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding PreventSleepDuringVerification}" Content="Prevent sleep during verification" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding IncludeProbableActivity}" Content="Include probable activity" />
+                    <TextBlock Text="By default only confirmed activity keeps the PC awake. Turn this on if you also want inferred Epic or folder-based Xbox activity to count." Style="{StaticResource Label}" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="NOTIFICATIONS" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,22">
+                <StackPanel IsEnabled="{Binding ShowNotifications}">
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifyDownloadStarted}" Content="Download started" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifyDownloadCompleted}" Content="Download completed" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifyDownloadPaused}" Content="Download paused" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifySleepPreventionActivated}" Content="Sleep prevention activated" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifySleepPreventionReleased}" Content="Sleep prevention released" />
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding NotifyDetectionErrors}" Content="Detection errors" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="DISPLAY" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding ShowDetectionDetails}" Content="Show provider detection details" />
+                    <TextBlock Text="Adds paths, log offsets and evidence under each launcher card. Useful when diagnosing a missed download." Style="{StaticResource Label}" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

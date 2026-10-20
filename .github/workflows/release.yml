@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Version from tag
+        shell: pwsh
+        run: |
+          $ref = $env:GITHUB_REF_NAME
+          if ($ref -notmatch '^v') { $ref = "v0.0.0-dev" }
+          $version = $ref.TrimStart("v")
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Version $version"
+
+      - name: Test
+        run: dotnet test GameWake.sln -c Release --nologo
+
+      - name: Publish
+        run: >
+          dotnet publish src/GameWake.App/GameWake.App.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:Version=${{ env.VERSION }}
+          -p:InformationalVersion=${{ env.VERSION }}
+          -o publish/GameWake
+
+      - name: Package
+        shell: pwsh
+        run: |
+          Copy-Item LICENSE publish/GameWake/LICENSE.txt
+          Copy-Item README.md publish/GameWake/README.md
+          $zip = "GameWake-${{ env.VERSION }}-win-x64.zip"
+          Compress-Archive -Path publish/GameWake/* -DestinationPath $zip -Force
+          "ZIP=$zip" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: GameWake-${{ env.VERSION }}-win-x64.zip
+          generate_release_notes: true
+          draft: ${{ github.event_name == 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/') }}
